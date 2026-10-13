@@ -44,9 +44,13 @@ export function MenuExplorer() {
   }, [q]);
 
   useEffect(() => {
-    navRef.current
-      ?.querySelector<HTMLElement>(`[data-anchor="${active}"]`)
-      ?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    // Only scroll the category strip horizontally; scrollIntoView would also move the page and fight the user's scroll.
+    const nav = navRef.current;
+    const pill = nav?.querySelector<HTMLElement>(`[data-anchor="${active}"]`);
+    if (!nav || !pill || nav.scrollWidth <= nav.clientWidth) return;
+    const offset = pill.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+    const left = nav.scrollLeft + offset - (nav.clientWidth - pill.offsetWidth) / 2;
+    nav.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
   }, [active]);
 
   return (
