@@ -31,8 +31,8 @@ export function SiteHeader() {
     <header className="glass fixed inset-x-0 top-0 z-50 border-b border-white/[0.06]">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-[72px] sm:px-6">
         <a href="#top" className="flex min-w-0 items-center gap-3" aria-label={`${cafe.name} — home`}>
-          <span className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-gold/50 sm:size-11">
-            <Image src={cafe.logo} alt="" fill sizes="44px" className="object-cover" preload />
+          <span className="relative size-10 shrink-0 rounded-full bg-white shadow-[0_0_0_2px_rgba(197,165,114,0.55)] sm:size-11">
+            <Image src={cafe.logo} alt="" fill sizes="44px" unoptimized className="object-contain" preload />
           </span>
           <span className="min-w-0">
             <span className="block font-heading text-lg font-black leading-tight tracking-tight sm:text-xl">

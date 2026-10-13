@@ -11,8 +11,8 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
-            <span className="relative size-12 overflow-hidden rounded-full ring-2 ring-gold/50">
-              <Image src={cafe.logo} alt="" fill sizes="48px" className="object-cover" />
+            <span className="relative size-20 shrink-0 rounded-full bg-white shadow-[0_0_0_2px_rgba(197,165,114,0.55)]">
+              <Image src={cafe.logo} alt={`${cafe.name} logo`} fill sizes="80px" unoptimized className="object-contain" />
             </span>
             <span className="font-heading text-2xl font-black">
               <span className="two-tone-text">{cafe.name}</span>

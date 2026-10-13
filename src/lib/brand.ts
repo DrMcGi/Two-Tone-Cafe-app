@@ -14,7 +14,7 @@ export const cafe = {
   shortName: "Two Tone",
   tagline: "Fresh kotas, crispy chips & essentials — delivery 🚴 or collection 🍽️",
   heroLine: "Neighborhood flavor. Fast delivery. Always fresh.",
-  logo: "/images/TwoToneLogo.jpg",
+  logo: "/brand/two-tone-logo.svg",
   promoVideo: "/videos/promo.mp4",
   /** International format, no "+" — used for wa.me links. */
   whatsappNumber: "27767475399",

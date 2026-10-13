@@ -10,6 +10,11 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#070b0a",
     theme_color: "#070b0a",
-    icons: [{ src: "/images/TwoToneLogo.jpg", sizes: "536x715", type: "image/jpeg", purpose: "any" }],
+    icons: [
+      { src: "/brand/two-tone-logo.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
+      { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icons/maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+    ],
   };
 }
