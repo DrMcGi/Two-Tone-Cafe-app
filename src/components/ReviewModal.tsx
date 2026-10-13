@@ -29,7 +29,8 @@ export function ReviewModal() {
 function Preview({ onSent, onCancel }: { onSent: (url: string) => void; onCancel: () => void }) {
   const lines = useCart((s) => s.lines);
   const customer = useCart((s) => s.customer);
-  const message = useMemo(() => buildWhatsAppMessage(lines, customer), [lines, customer]);
+  const orderNo = useCart((s) => s.orderNo);
+  const message = useMemo(() => buildWhatsAppMessage(lines, customer, orderNo), [lines, customer, orderNo]);
 
   const send = () => {
     const url = whatsappUrl(cafe.whatsappNumber, message);
@@ -41,7 +42,10 @@ function Preview({ onSent, onCancel }: { onSent: (url: string) => void; onCancel
   return (
     <>
       <div className="px-6 pb-2 pt-6 sm:px-8">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-teal-bright">Final step</span>
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-teal-bright">Final step</span>
+          {orderNo && <OrderBadge orderNo={orderNo} />}
+        </div>
         <h2 className="mt-1 font-heading text-2xl font-black">Preview your WhatsApp message</h2>
         <p className="mt-1 text-sm text-muted">This goes straight to {cafe.name} on {cafe.whatsappDisplay}.</p>
       </div>
@@ -65,12 +69,27 @@ function Preview({ onSent, onCancel }: { onSent: (url: string) => void; onCancel
   );
 }
 
+function OrderBadge({ orderNo }: { orderNo: string }) {
+  return (
+    <span className="rounded-full border border-gold/40 bg-gold/10 px-3 py-1 font-heading text-xs font-black tracking-wider text-gold-bright">
+      Order #{orderNo}
+    </span>
+  );
+}
+
 function Sent({ url, onDone }: { url: string; onDone: () => void }) {
   const clear = useCart((s) => s.clear);
+  const orderNo = useCart((s) => s.orderNo);
   return (
     <div className="flex flex-col items-center px-6 py-10 text-center sm:px-10">
       <CheckCircle2 className="size-16 text-wa" strokeWidth={1.5} />
       <h2 className="mt-4 font-heading text-2xl font-black">Order sent to WhatsApp</h2>
+      {orderNo && (
+        <div className="mt-3">
+          <OrderBadge orderNo={orderNo} />
+          <p className="mt-2 text-xs text-muted">Keep this number handy when you speak to {cafe.name}.</p>
+        </div>
+      )}
       <p className="mt-2 max-w-sm text-sm text-muted">
         Hit send in WhatsApp if you haven&apos;t yet. {cafe.name} will message you to confirm time & payment — cash on delivery accepted.
       </p>

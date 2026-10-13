@@ -34,9 +34,9 @@ test("totals: extras per item, R8 delivery, tip", () => {
 test("WhatsApp message matches the original format", () => {
   const customer: Customer = { name: "Thabo", phone: "0811234567", method: "Delivery", address: "12 Main Rd", tip: 10 };
   assert.equal(
-    buildWhatsAppMessage(lines, customer),
+    buildWhatsAppMessage(lines, customer, "TT-48213"),
     [
-      "Order — Two Tone Café",
+      "Order — Two Tone Café #TT-48213",
       "Name: Thabo",
       "Phone: 0811234567",
       "Method: Delivery",

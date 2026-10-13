@@ -2,11 +2,13 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { lineKey, type CartLine, type Customer } from "@/lib/order";
+import { generateOrderNumber, lineKey, type CartLine, type Customer } from "@/lib/order";
 
 type CartState = {
   lines: CartLine[];
   customer: Customer;
+  /** Assigned when the customer first reviews the order; kept until the order is cleared. */
+  orderNo: string;
   bump: number;
   add: (itemId: string, qty: number, extras?: string[], sauces?: string[]) => void;
   setQty: (key: string, qty: number) => void;
@@ -14,15 +16,17 @@ type CartState = {
   clear: () => void;
   reset: () => void;
   setCustomer: (patch: Partial<Customer>) => void;
+  ensureOrderNo: () => string;
 };
 
 const emptyCustomer: Customer = { name: "", phone: "", method: "", address: "", tip: 0 };
 
 export const useCart = create<CartState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       lines: [],
       customer: emptyCustomer,
+      orderNo: "",
       bump: 0,
       add: (itemId, qty, extras = [], sauces = []) =>
         set((s) => {
@@ -38,15 +42,22 @@ export const useCart = create<CartState>()(
           lines: qty <= 0 ? s.lines.filter((l) => l.key !== key) : s.lines.map((l) => (l.key === key ? { ...l, qty } : l)),
         })),
       remove: (key) => set((s) => ({ lines: s.lines.filter((l) => l.key !== key) })),
-      clear: () => set({ lines: [] }),
-      reset: () => set({ lines: [], customer: emptyCustomer }),
+      clear: () => set({ lines: [], orderNo: "" }),
+      reset: () => set({ lines: [], customer: emptyCustomer, orderNo: "" }),
       setCustomer: (patch) => set((s) => ({ customer: { ...s.customer, ...patch } })),
+      ensureOrderNo: () => {
+        const existing = get().orderNo;
+        if (existing) return existing;
+        const orderNo = generateOrderNumber();
+        set({ orderNo });
+        return orderNo;
+      },
     }),
     {
       name: "two-tone-cafe-cart",
       version: 1,
       storage: createJSONStorage(() => localStorage),
-      partialize: (s) => ({ lines: s.lines, customer: s.customer }),
+      partialize: (s) => ({ lines: s.lines, customer: s.customer, orderNo: s.orderNo }),
       skipHydration: true,
     },
   ),

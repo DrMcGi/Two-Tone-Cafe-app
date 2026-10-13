@@ -57,10 +57,17 @@ export function missingFields(lines: CartLine[], c: Customer) {
   return missing;
 }
 
-/** Same message format the café already receives from the original site. */
-export function buildWhatsAppMessage(lines: CartLine[], c: Customer) {
+/** Short, human-friendly reference the café can quote back, e.g. "TT-48213". */
+export function generateOrderNumber() {
+  const n = new Uint32Array(1);
+  crypto.getRandomValues(n);
+  return `TT-${String(10000 + (n[0] % 90000))}`;
+}
+
+/** Same message format the café already receives from the original site, plus an order reference. */
+export function buildWhatsAppMessage(lines: CartLine[], c: Customer, orderNo?: string) {
   const out: string[] = [];
-  out.push("Order — Two Tone Café");
+  out.push(orderNo ? `Order — Two Tone Café #${orderNo}` : "Order — Two Tone Café");
   out.push(`Name: ${c.name.trim()}`);
   out.push(`Phone: ${c.phone.trim()}`);
   out.push(`Method: ${c.method}`);

@@ -26,6 +26,7 @@ export function OrderPanel({ idPrefix }: { idPrefix: string }) {
   const remove = useCart((s) => s.remove);
   const reset = useCart((s) => s.reset);
   const setCustomer = useCart((s) => s.setCustomer);
+  const ensureOrderNo = useCart((s) => s.ensureOrderNo);
   const setReviewOpen = useUi((s) => s.setReviewOpen);
 
   const count = cartCount(lines);
@@ -116,7 +117,10 @@ export function OrderPanel({ idPrefix }: { idPrefix: string }) {
         className="flex flex-col gap-4"
         onSubmit={(e) => {
           e.preventDefault();
-          if (missing.length === 0) setReviewOpen(true);
+          if (missing.length === 0) {
+            ensureOrderNo();
+            setReviewOpen(true);
+          }
         }}
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
