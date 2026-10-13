@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Bike, Minus, Plus, Store, Trash2 } from "lucide-react";
 import { CONFIRM_NOTE, DELIVERY_FEE_BASE, getExtra, getItem } from "@/lib/menu";
@@ -31,6 +32,11 @@ export function OrderPanel({ idPrefix }: { idPrefix: string }) {
   const totals = totalsOf(lines, customer);
   const missing = missingFields(lines, customer);
   const id = (name: string) => `${idPrefix}-${name}`;
+
+  // Keep the raw typed text so intermediate values (e.g. "5" while typing "50") aren't swallowed by presets.
+  const [customTip, setCustomTip] = useState("");
+  const usingCustomTip = customTip !== "" && Math.max(0, Number(customTip) || 0) === customer.tip;
+  const customTipValue = usingCustomTip ? customTip : tipPresets.includes(customer.tip) ? "" : String(customer.tip);
 
   return (
     <div className="flex flex-col gap-5">
@@ -174,10 +180,13 @@ export function OrderPanel({ idPrefix }: { idPrefix: string }) {
               <button
                 key={t}
                 type="button"
-                onClick={() => setCustomer({ tip: t })}
-                aria-pressed={customer.tip === t}
+                onClick={() => {
+                  setCustomTip("");
+                  setCustomer({ tip: t });
+                }}
+                aria-pressed={!usingCustomTip && customer.tip === t}
                 className={`flex-1 rounded-xl border py-2 text-xs font-bold transition ${
-                  customer.tip === t ? "border-gold bg-gold/15 text-gold-bright" : "border-white/10 bg-white/[0.03] text-cream/80 hover:border-white/25"
+                  !usingCustomTip && customer.tip === t ? "border-gold bg-gold/15 text-gold-bright" : "border-white/10 bg-white/[0.03] text-cream/80 hover:border-white/25"
                 }`}
               >
                 {t === 0 ? "None" : `R${t}`}
@@ -191,8 +200,11 @@ export function OrderPanel({ idPrefix }: { idPrefix: string }) {
                 min={0}
                 step={1}
                 inputMode="numeric"
-                value={tipPresets.includes(customer.tip) ? "" : customer.tip}
-                onChange={(e) => setCustomer({ tip: Math.max(0, Number(e.target.value) || 0) })}
+                value={customTipValue}
+                onChange={(e) => {
+                  setCustomTip(e.target.value);
+                  setCustomer({ tip: Math.max(0, Number(e.target.value) || 0) });
+                }}
                 placeholder="Other"
                 className="h-full w-full rounded-xl border border-white/10 bg-white/[0.03] pl-6 pr-2 text-xs text-white placeholder:text-muted focus:border-gold/60 focus:outline-none"
               />
